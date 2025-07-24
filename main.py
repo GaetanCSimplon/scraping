@@ -1,0 +1,3 @@
+from pipelines.pipeline_scraping import run_scraping_pipeline
+
+run_scraping_pipeline(nb_books=50)
