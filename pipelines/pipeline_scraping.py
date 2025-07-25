@@ -4,7 +4,7 @@ from process_data.process_scraping import convert_types
 from database.insert_data import insert_data_to_db
 import os
 
-def run_scraping_pipeline(nb_books=50):
+def run_scraping_pipeline(nb_books):
     print("Lancement du scraping...")
     scraped_data = scrape_books(nb_books)
     df = pd.DataFrame(scraped_data)
@@ -23,3 +23,5 @@ def run_scraping_pipeline(nb_books=50):
     print(" Insertion terminée.")
 
     print(" Pipeline complet exécuté avec succès !")
+
+

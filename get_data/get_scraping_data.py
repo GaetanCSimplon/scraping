@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
+
 
 def get_books_html(url: str) -> BeautifulSoup:
     """Fetch the HTML content of a book page.
@@ -74,8 +74,6 @@ def extract_book_info(book: BeautifulSoup) -> dict:
             'availability': extract_availability(book)
         }
         return livre
-
-
 def scrape_books(pages: int) -> list[dict]:
 
     """Scrape books from the specified number of pages.
