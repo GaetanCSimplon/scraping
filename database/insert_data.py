@@ -33,7 +33,7 @@ def insert_data_to_db(csv_path='book_infos_cleaned.csv', db_path='book_store.db'
 
 # Insertion des données depuis l'API Google Books
 
-def insert_api_data_to_db(df_book_list):
+def insert_api_data_to_db(df_books_list):
     # Connexion à la base
     connection = sqlite3.connect('book_store.db')
     cursor = connection.cursor()
