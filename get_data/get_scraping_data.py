@@ -15,7 +15,7 @@ def get_books_html(url: str) -> BeautifulSoup:
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     return soup
-
+# Extraction de données à partir d'un site web
 def extract_title(book: BeautifulSoup) -> str:
     """Extract the title of a book from a BeautifulSoup object.
 
@@ -96,3 +96,79 @@ def scrape_books(pages: int) -> list[dict]:
         all_books.extend(data_books) # extend() pour ajouter les informations scrapés dans la liste all_books
     return all_books
 
+# Extraction de données à partir de l'API Google Books
+
+def get_param_api():
+    print("Paramètres de recherche...")
+# Demande des termes de recherche
+    title = input("Que recherchez-vous ? (titre, auteur...) ").strip()
+    while not title:
+        print('\n Veuillez saisir votre recherche \n')
+        title = input("\n Que recherchez-vous ? (titre, auteur...) ").strip()
+
+# Demande du type de format
+    while True:
+        printType = input("Quel format d'ouvrage ? 'all' / 'books' / 'magazines' ").lower().strip()
+        match printType:
+            case 'books' | 'magazines' | 'all':
+                break
+            case _:
+                print("Veuillez saisir l'une des trois valeurs proposées" )
+# Demande du nombre de résultats
+    while True:
+        max_results = input('Combien de résultats souhaitez-vous ? (min. 1 / max: 40) ').strip()
+        if max_results == "":
+            max_results = 10
+            break
+        elif max_results.isdigit() and 1 <= int(max_results) <= 40:
+            max_results = int(max_results)
+            break
+        else:
+            print('Veuillez renseigner un nombre compris entre 1 et 40. ')
+
+
+    param = {
+    'q': title,
+    'printType': printType,
+    'filter': 'paid-ebooks',
+    'maxResults': max_results,
+    'orderBy': 'relevance'
+    }
+
+    return param
+def get_scraping_data_api(BASE_URL, param):
+    response = requests.get(BASE_URL, params=param)
+# Récolte de l'ensemble de données des livres recherchés
+    data_books_raw = response.json()
+# Ciblage de la partie 'items' contenant les données à récolter
+    data_books = data_books_raw['items']
+    for book in data_books:
+        volume = book.get('volumeInfo', {})
+        sale = book.get('saleInfo', {})
+        title = volume.get('title')
+        price = sale.get('listPrice', {}).get('amount')
+        rating = volume.get('averageRating')
+# Affichage des valeurs
+        print(f'Titre : {title}')
+        print(f'Prix : {price}')
+        print(f'Note moyenne : {rating}')
+    return data_books
+
+def save_data_dict(data_books):
+    # Création d'une liste de dictionnaires pour les livres
+    books_list = []
+
+    for book in data_books:
+        volume = book.get('volumeInfo', {})
+        sale = book.get('saleInfo', {})
+        title = volume.get('title')
+        price = sale.get('listPrice', {}).get('amount')
+        rating = volume.get('averageRating')
+
+        book_dict = {
+        'title': title,
+        'price': price,
+        'rating': rating
+    }
+        books_list.append(book_dict)
+    return books_list
